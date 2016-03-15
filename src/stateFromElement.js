@@ -201,10 +201,11 @@ class BlockGenerator {
     let entityKey = block.entityStack.slice(-1)[0];
     style = addStyleFromTagName(style, tagName);
     if (tagName === 'a') {
-      let url = element.getAttribute('href');
-      if (url != null) {
-        entityKey = Entity.create(ENTITY_TYPE.LINK, 'MUTABLE', {url});
-      }
+      const linkAttributes = [...element.attributes]
+        .reduce((data, {name, value}) => ({ ...data, [name]: value }), {});
+      const { href, ...entityAttributes } = linkAttributes;
+      const entityData = { url: href, ...entityAttributes };
+      entityKey = Entity.create(ENTITY_TYPE.LINK, 'MUTABLE', entityData);
     }
     block.styleStack.push(style);
     block.entityStack.push(entityKey);
